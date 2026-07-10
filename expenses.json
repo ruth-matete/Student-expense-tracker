@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "name": "lunch",
+        "amount": 350.0
+    },
+    {
+        "name": "supper",
+        "amount": 70.0
+    }
+]

@@ -1,11 +1,45 @@
 import json
 import os
 
+FILE_NAME = "expenses.json"
+
+
+def load_expenses():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as file:
+            return json.load(file)
+    return []
+
+
+def save_expenses(expenses):
+    with open(FILE_NAME, "w") as file:
+        json.dump(expenses, file, indent=4)
+
+
+def add_expense():
+    print("\n--- Add Expense ---")
+
+    name = input("Enter expense name: ")
+    amount = float(input("Enter amount: "))
+
+    expenses = load_expenses()
+
+    expense = {
+        "name": name,
+        "amount": amount
+    }
+
+    expenses.append(expense)
+
+    save_expenses(expenses)
+
+    print("\n✅ Expense added successfully!")
+
 
 def menu():
-    print("\n" + "=" * 35)
+    print("\n" + "=" * 70)
     print("     STUDENT EXPENSE TRACKER")
-    print("=" * 35)
+    print("=" * 70)
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. View Total Spent")
@@ -18,7 +52,10 @@ while True:
 
     choice = input("\nChoose an option (1-5): ")
 
-    if choice == "5":
+    if choice == "1":
+        add_expense()
+
+    elif choice == "5":
         print("\nThank you for using Student Expense Tracker!")
         break
 
