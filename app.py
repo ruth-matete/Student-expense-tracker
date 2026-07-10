@@ -36,10 +36,23 @@ def add_expense():
     print("\n✅ Expense added successfully!")
 
 
+def view_expenses():
+    expenses = load_expenses()
+
+    print("\n--- Your Expenses ---")
+
+    if not expenses:
+        print("No expenses found.")
+        return
+
+    for index, expense in enumerate(expenses, start=1):
+        print(f"{index}. {expense['name']} - Ksh {expense['amount']}")
+
+
 def menu():
-    print("\n" + "=" * 70)
+    print("\n" + "=" * 35)
     print("     STUDENT EXPENSE TRACKER")
-    print("=" * 70)
+    print("=" * 35)
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. View Total Spent")
@@ -54,6 +67,9 @@ while True:
 
     if choice == "1":
         add_expense()
+
+    elif choice == "2":
+        view_expenses()
 
     elif choice == "5":
         print("\nThank you for using Student Expense Tracker!")
