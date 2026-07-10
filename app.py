@@ -49,6 +49,15 @@ def view_expenses():
         print(f"{index}. {expense['name']} - Ksh {expense['amount']}")
 
 
+def view_total():
+    expenses = load_expenses()
+
+    total = sum(expense["amount"] for expense in expenses)
+
+    print("\n--- Total Spending ---")
+    print(f"Total Spent: Ksh {total}")
+
+
 def menu():
     print("\n" + "=" * 35)
     print("     STUDENT EXPENSE TRACKER")
@@ -70,6 +79,9 @@ while True:
 
     elif choice == "2":
         view_expenses()
+
+    elif choice == "3":
+        view_total()
 
     elif choice == "5":
         print("\nThank you for using Student Expense Tracker!")
