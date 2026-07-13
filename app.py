@@ -37,6 +37,7 @@ def add_expense(expenses):
 
     expenses.append(expense)
     save_expenses(expenses)
+
     print("Expense added successfully!")
 
 
@@ -70,22 +71,61 @@ def delete_expense(expenses):
 
     print("\n===== Delete Expense =====")
 
-    for i, expense in enumerate(expenses, start=1):
-        print(
-            f"{i}. {expense['category']} | "
-            f"{expense['description']} | "
-            f"Ksh {expense['amount']}"
-        )
+    view_expenses(expenses)
 
     try:
         choice = int(input("\nEnter expense number to delete: "))
 
         if 1 <= choice <= len(expenses):
             removed = expenses.pop(choice - 1)
+
             save_expenses(expenses)
+
             print(
                 f"\nDeleted: {removed['category']} - Ksh {removed['amount']}"
             )
+
+        else:
+            print("Invalid expense number.")
+
+    except ValueError:
+        print("Please enter a valid number.")
+
+
+# Edit an expense
+def edit_expense(expenses):
+    if not expenses:
+        print("\nNo expenses available to edit.")
+        return
+
+    print("\n===== Edit Expense =====")
+
+    view_expenses(expenses)
+
+    try:
+        choice = int(input("\nEnter expense number to edit: "))
+
+        if 1 <= choice <= len(expenses):
+
+            print("\nEnter new details:")
+
+            category = input("Enter new category: ")
+            description = input("Enter new description: ")
+
+            try:
+                amount = float(input("Enter new amount (Ksh): "))
+            except ValueError:
+                print("Invalid amount!")
+                return
+
+            expenses[choice - 1]["category"] = category
+            expenses[choice - 1]["description"] = description
+            expenses[choice - 1]["amount"] = amount
+
+            save_expenses(expenses)
+
+            print("\nExpense updated successfully!")
+
         else:
             print("Invalid expense number.")
 
@@ -103,7 +143,8 @@ def menu():
         print("2. View Expenses")
         print("3. View Total Spent")
         print("4. Delete Expense")
-        print("5. Exit")
+        print("5. Edit Expense")
+        print("6. Exit")
 
         choice = input("\nChoose an option: ")
 
@@ -120,6 +161,9 @@ def menu():
             delete_expense(expenses)
 
         elif choice == "5":
+            edit_expense(expenses)
+
+        elif choice == "6":
             print("\nThank you for using Student Expense Tracker!")
             break
 

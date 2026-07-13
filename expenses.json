@@ -1,10 +1,22 @@
 [
     {
-        "name": "lunch",
+        "category": "Food",
+        "description": "Lunch",
         "amount": 350.0
     },
     {
-        "name": "supper",
+        "category": "Food",
+        "description": "Supper",
         "amount": 70.0
+    },
+    {
+        "category": "Food",
+        "description": "Supper",
+        "amount": 20.0
+    },
+    {
+        "category": "recreation",
+        "description": "bike riding",
+        "amount": 200.0
     }
 ]
