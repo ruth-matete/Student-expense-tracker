@@ -46,14 +46,8 @@ def add_expense(expenses):
         print("Invalid amount!")
         return
 
-    date = input("Enter date (YYYY-MM-DD): ")
-
-    # Validate the date
-    try:
-        datetime.strptime(date, "%Y-%m-%d")
-    except ValueError:
-        print("Invalid date! Please use YYYY-MM-DD.")
-        return
+    # Automatically record today's date
+    date = datetime.now().strftime("%Y-%m-%d")
 
     expense = {
         "category": category,
@@ -65,7 +59,7 @@ def add_expense(expenses):
     expenses.append(expense)
     save_expenses(expenses)
 
-    print("Expense added successfully!")
+    print(f"Expense added successfully! Date recorded: {date}")
 
 
 # View all expenses
@@ -138,13 +132,8 @@ def edit_expense(expenses):
                 print("Invalid amount!")
                 return
 
-            date = input("Enter new date (YYYY-MM-DD): ")
-
-            try:
-                datetime.strptime(date, "%Y-%m-%d")
-            except ValueError:
-                print("Invalid date! Please use YYYY-MM-DD.")
-                return
+            # Automatically update the date when the expense is edited
+            date = datetime.now().strftime("%Y-%m-%d")
 
             expenses[choice - 1]["category"] = category
             expenses[choice - 1]["description"] = description
@@ -153,7 +142,10 @@ def edit_expense(expenses):
 
             save_expenses(expenses)
 
-            print("\nExpense updated successfully!")
+            print(
+                f"\nExpense updated successfully! "
+                f"Date updated to: {date}"
+            )
 
         else:
             print("Invalid expense number.")
