@@ -240,6 +240,46 @@ def filter_by_date(expenses):
         print(f"\nNo expenses found for {date}.")
 
 
+# Generate monthly expense report
+def monthly_expense_report(expenses):
+    if not expenses:
+        print("\nNo expenses available.")
+        return
+
+    print("\n===== Monthly Expense Report =====")
+
+    month = input("Enter month (YYYY-MM): ").strip()
+
+    # Validate the month format
+    try:
+        datetime.strptime(month, "%Y-%m")
+    except ValueError:
+        print("Invalid month! Please use YYYY-MM.")
+        return
+
+    results = []
+
+    for expense in expenses:
+        expense_date = expense.get("date")
+
+        if expense_date and expense_date.startswith(month):
+            results.append(expense)
+
+    if results:
+        print(f"\n===== Expenses for {month} =====")
+
+        display_expenses(results)
+
+        total = sum(expense["amount"] for expense in results)
+
+        print("\n-----------------------------------")
+        print(f"Total Spent in {month}: Ksh {total:.2f}")
+        print("-----------------------------------")
+
+    else:
+        print(f"\nNo expenses found for {month}.")
+
+
 # Main menu
 def menu():
     expenses = load_expenses()
@@ -254,7 +294,8 @@ def menu():
         print("6. Search Expenses")
         print("7. Filter by Category")
         print("8. Filter by Date")
-        print("9. Exit")
+        print("9. Monthly Expense Report")
+        print("10. Exit" )
 
         choice = input("\nChoose an option: ")
 
@@ -281,13 +322,15 @@ def menu():
 
         elif choice == "8":
             filter_by_date(expenses)
-
+ 
         elif choice == "9":
-            print("\nThank you for using Student Expense Tracker!")
-            break
+             monthly_expense_report(expenses)
 
-        else:
-            print("Invalid choice. Please try again.")
+        elif choice == "10":
+           print("\nThank you for using Student Expense Tracker!")
+           break
+    else:
+        print("Invalid choice. Please try again.")
 
 
 # Start the program
