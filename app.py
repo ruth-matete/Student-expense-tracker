@@ -1,5 +1,7 @@
+
 import json
 import os
+from datetime import datetime
 
 FILE_NAME = "expenses.json"
 
@@ -18,6 +20,21 @@ def save_expenses(expenses):
         json.dump(expenses, file, indent=4)
 
 
+# Display expenses
+def display_expenses(expenses):
+    if not expenses:
+        print("\nNo expenses found.")
+        return
+
+    for i, expense in enumerate(expenses, start=1):
+        print(
+            f"{i}. {expense['category']} | "
+            f"{expense['description']} | "
+            f"Ksh {expense['amount']:.2f} | "
+            f"Date: {expense.get('date', 'N/A')}"
+        )
+
+
 # Add a new expense
 def add_expense(expenses):
     category = input("Enter category: ")
@@ -29,10 +46,20 @@ def add_expense(expenses):
         print("Invalid amount!")
         return
 
+    date = input("Enter date (YYYY-MM-DD): ")
+
+    # Validate the date
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date! Please use YYYY-MM-DD.")
+        return
+
     expense = {
         "category": category,
         "description": description,
-        "amount": amount
+        "amount": amount,
+        "date": date
     }
 
     expenses.append(expense)
@@ -48,19 +75,13 @@ def view_expenses(expenses):
         return
 
     print("\n===== All Expenses =====")
-
-    for i, expense in enumerate(expenses, start=1):
-        print(
-            f"{i}. {expense['category']} | "
-            f"{expense['description']} | "
-            f"Ksh {expense['amount']}"
-        )
+    display_expenses(expenses)
 
 
 # View total amount spent
 def view_total(expenses):
     total = sum(expense["amount"] for expense in expenses)
-    print(f"\nTotal Spent: Ksh {total}")
+    print(f"\nTotal Spent: Ksh {total:.2f}")
 
 
 # Delete an expense
@@ -70,8 +91,7 @@ def delete_expense(expenses):
         return
 
     print("\n===== Delete Expense =====")
-
-    view_expenses(expenses)
+    display_expenses(expenses)
 
     try:
         choice = int(input("\nEnter expense number to delete: "))
@@ -82,7 +102,8 @@ def delete_expense(expenses):
             save_expenses(expenses)
 
             print(
-                f"\nDeleted: {removed['category']} - Ksh {removed['amount']}"
+                f"\nDeleted: {removed['category']} - "
+                f"Ksh {removed['amount']:.2f}"
             )
 
         else:
@@ -99,8 +120,7 @@ def edit_expense(expenses):
         return
 
     print("\n===== Edit Expense =====")
-
-    view_expenses(expenses)
+    display_expenses(expenses)
 
     try:
         choice = int(input("\nEnter expense number to edit: "))
@@ -118,9 +138,18 @@ def edit_expense(expenses):
                 print("Invalid amount!")
                 return
 
+            date = input("Enter new date (YYYY-MM-DD): ")
+
+            try:
+                datetime.strptime(date, "%Y-%m-%d")
+            except ValueError:
+                print("Invalid date! Please use YYYY-MM-DD.")
+                return
+
             expenses[choice - 1]["category"] = category
             expenses[choice - 1]["description"] = description
             expenses[choice - 1]["amount"] = amount
+            expenses[choice - 1]["date"] = date
 
             save_expenses(expenses)
 
@@ -131,6 +160,92 @@ def edit_expense(expenses):
 
     except ValueError:
         print("Please enter a valid number.")
+
+
+# Search expenses
+def search_expenses(expenses):
+    if not expenses:
+        print("\nNo expenses available to search.")
+        return
+
+    print("\n===== Search Expenses =====")
+
+    search_term = input("Enter search term: ").lower().strip()
+
+    if not search_term:
+        print("Search term cannot be empty.")
+        return
+
+    results = []
+
+    for expense in expenses:
+        category = expense["category"].lower()
+        description = expense["description"].lower()
+
+        if search_term in category or search_term in description:
+            results.append(expense)
+
+    if results:
+        print(f"\n===== Search Results for '{search_term}' =====")
+        display_expenses(results)
+    else:
+        print(f"\nNo expenses found matching '{search_term}'.")
+
+
+# Filter expenses by category
+def filter_by_category(expenses):
+    if not expenses:
+        print("\nNo expenses available.")
+        return
+
+    print("\n===== Filter by Category =====")
+
+    category = input("Enter category: ").lower().strip()
+
+    if not category:
+        print("Category cannot be empty.")
+        return
+
+    results = []
+
+    for expense in expenses:
+        if expense["category"].lower() == category:
+            results.append(expense)
+
+    if results:
+        print(f"\n===== Expenses in '{category.title()}' =====")
+        display_expenses(results)
+    else:
+        print(f"\nNo expenses found in the category '{category}'.")
+
+
+# Filter expenses by date
+def filter_by_date(expenses):
+    if not expenses:
+        print("\nNo expenses available.")
+        return
+
+    print("\n===== Filter by Date =====")
+
+    date = input("Enter date (YYYY-MM-DD): ")
+
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date! Please use YYYY-MM-DD.")
+        return
+
+    results = []
+
+    for expense in expenses:
+        if expense.get("date") == date:
+            results.append(expense)
+
+    if results:
+        print(f"\n===== Expenses on {date} =====")
+        display_expenses(results)
+    else:
+        print(f"\nNo expenses found for {date}.")
 
 
 # Main menu
@@ -144,7 +259,10 @@ def menu():
         print("3. View Total Spent")
         print("4. Delete Expense")
         print("5. Edit Expense")
-        print("6. Exit")
+        print("6. Search Expenses")
+        print("7. Filter by Category")
+        print("8. Filter by Date")
+        print("9. Exit")
 
         choice = input("\nChoose an option: ")
 
@@ -164,6 +282,15 @@ def menu():
             edit_expense(expenses)
 
         elif choice == "6":
+            search_expenses(expenses)
+
+        elif choice == "7":
+            filter_by_category(expenses)
+
+        elif choice == "8":
+            filter_by_date(expenses)
+
+        elif choice == "9":
             print("\nThank you for using Student Expense Tracker!")
             break
 
